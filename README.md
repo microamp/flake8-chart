@@ -21,13 +21,15 @@ Options:
 
 Usage
 -----
-
 `flake8-chart` takes the output of `flake8` as the input. Make sure the `--statistics` flag is on when `flake8` is executed.
-
-
 ```bash
 $ flake8 --quiet --statistics /path/to/some/repo | python flake8chart.py --chart-type=BAR --chart-output=stats_bar.svg --csv-output=stats.csv
 ```
+
+Examples
+--------
+* ![pie chart](https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_pie.svg)
+* ![bar graph](https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_bar.svg)
 
 License
 -------
