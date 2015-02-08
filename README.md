@@ -28,8 +28,8 @@ $ flake8 --quiet --statistics /path/to/some/repo | python flake8chart.py --chart
 
 Examples
 --------
-* ![pie chart](https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_pie.svg)
-* ![bar graph](https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_bar.svg)
+* [pie chart](https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_pie.svg)
+* [bar graph](https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_bar.svg)
 
 License
 -------
