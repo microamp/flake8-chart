@@ -1,0 +1,187 @@
+# -*- coding: utf-8 -*-
+
+"""TODO: docstring
+"""
+
+import sys
+import string
+import itertools
+import time
+import pprint
+import csv
+
+try:
+    import click
+    # import flake8.engine
+    # import flake8.main
+    import pygal
+except ImportError as e:
+    print("error: {0}".format(e))
+    sys.exit()
+
+if sys.version_info[0] == 3:
+    import functools
+    reduce = functools.reduce
+
+# ref: http://flake8.readthedocs.org/en/latest/warnings.html
+CODES = {"E1": "Indentation",
+         "E2": "Whitespace",
+         "E3": "Blank line",
+         "E4": "Import",
+         "E5": "Line length",
+         "E7": "Statement",
+         "E9": "Runtime",
+         "W1": "Indentation",
+         "W2": "Whitespace",
+         "W3": "Blank line",
+         "W6": "Deprecation",
+         "F4": "Module",
+         "F8": "Name"}
+STYLE_GUIDE_OPTIONS = {"quiet": True, "statistics": True}
+CHART_TYPE_PIE = "PIE"
+CHART_TYPE_BAR = "BAR"
+CHART_TYPES = (CHART_TYPE_PIE, CHART_TYPE_BAR,)
+
+
+def merge_dicts(*dicts):
+    return {k: v for d in dicts for k, v in d.items()}
+
+
+def pipe(*fns):
+    def _pipe(*args, **kwargs):
+        return reduce(lambda r, g: g(r),
+                      fns[1:],
+                      fns[0](*args, **kwargs))
+
+    return _pipe
+
+
+def split_str(s, sep=None, maxsplit=2):
+    return (s.split(sep=sep, maxsplit=maxsplit)
+            if sys.version_info[0] == 3 else
+            string.split(s, sep=sep, maxsplit=maxsplit))
+
+
+def dict_rows(rows):
+    def _is_stat(split):
+        return len(split) == 3 and split[0].isdigit() and len(split[1]) == 4
+
+    for r in rows:
+        split = split_str(r)
+
+        if not _is_stat(split):
+            continue
+
+        yield {"count": int(split[0]),
+               "code": split[1],
+               "desc": split[2]}
+
+
+def group_by_code(rows):
+    return itertools.groupby(sorted(rows, key=lambda r: r["code"]),
+                             key=lambda r: r["code"][:2])
+
+
+def calc_sum(rows):
+    return (["{code}: {desc}".format(code=code, desc=CODES.get(code, "?")),
+             sum(r["count"] for r in iterable)]
+            for code, iterable in rows)
+
+
+def sort_by_count(rows):
+    return sorted(rows, key=lambda r: r[1], reverse=True)
+
+
+def get_total(rows):
+    return sum(r[1] for r in rows)
+
+
+def chart_pie(rows, title="Title", filename="pie_chart.svg"):
+    chart = pygal.Pie()
+    chart.title = title
+
+    for row in rows:
+        chart.add(*row)
+
+    return chart.render_to_file(filename)
+
+
+def chart_bar(rows, title="Title", filename="bar_chart.svg"):
+    chart = pygal.Bar()
+    chart.title = title
+
+    for row in rows:
+        chart.add(*row)
+
+    return chart.render_to_file(filename)
+
+
+def elapsed(f):
+    def _elapsed(*args, **kwargs):
+        start = time.time()
+        result = f(*args, **kwargs)
+        click.echo("time elapsed: %.2f seconds" % (time.time() - start,))
+        return result
+
+    return _elapsed
+
+
+@click.command()
+@click.option("--chart-type", default=CHART_TYPE_PIE,
+              type=click.Choice(CHART_TYPES),
+              help="type of chart (default: {0})".format(CHART_TYPE_PIE))
+@click.option("--chart-output", default="flake8_stats.svg",
+              help=("name of SVG file to export "
+                    "(default: {0})".format("flake8_stats.svg")))
+@click.option("--csv-output", help="name of CSV file to export")
+@elapsed
+def flake8chart(chart_type, chart_output, csv_output):
+    click.echo("chart-type: {0}".format(chart_type))
+    click.echo("chart_output: {0}".format(chart_output))
+    click.echo("csv-output: {0}".format(csv_output))
+
+    # sort stats by count
+    stats = sorted([r for r in sys.stdin.read().split("\n") if r],
+                   key=lambda r: int(r.split()[0]),
+                   reverse=True)
+    if not stats:
+        click.echo("error: no stats found")
+        return
+    click.echo("stats:")
+    click.echo(pprint.pformat(stats))
+
+    # aggregate stats
+    pipeline = pipe(dict_rows,
+                    group_by_code,
+                    calc_sum,
+                    sort_by_count,)
+    aggregated = pipeline(stats)
+
+    click.echo("stats summary:")
+    click.echo(pprint.pformat(aggregated))
+
+    # export chart
+    if aggregated:
+        if chart_type.upper() == "PIE":
+            chart_pie(aggregated,
+                      title="flake8 stats (%)",
+                      filename=chart_output)
+            click.echo("pie chart exported: '{0}'".format(chart_output))
+        else:
+            chart_bar(aggregated,
+                      title=("flake8 stats "
+                             "(total: {0})".format(get_total(aggregated))),
+                      filename=chart_output)
+            click.echo("bar chart exported: '{0}'".format(chart_output))
+
+    # export csv
+    if csv_output:
+        with open(csv_output, "w") as file:
+            writer = csv.DictWriter(file, fieldnames=["count", "code", "desc"])
+            writer.writeheader()
+            writer.writerows(list(dict_rows(stats)))
+            click.echo("csv output exported: '{0}'".format(csv_output))
+
+
+if __name__ == "__main__":
+    flake8chart()
