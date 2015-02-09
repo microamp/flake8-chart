@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""TODO: docstring
+"""flake8chart: flake8 stats visualised
 """
 
 __version__ = "0.1"
