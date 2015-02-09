@@ -3,10 +3,6 @@
 """flake8chart: flake8 stats visualised
 """
 
-__version__ = "0.1"
-__author__ = "james sangho nah"
-__email__ = "sangho.nah@gmail.com"
-
 import sys
 import string
 import itertools
