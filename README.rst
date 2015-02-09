@@ -33,7 +33,7 @@ Help
 
 Usage
 -----
-`flake8chart` takes the output of `flake8` as an input. Make sure the `--statistics` flag is on with `flake8`.
+``flake8chart`` takes the output of ``flake8`` as an input. Make sure the ``--statistics`` flag is on with ``flake8``.
 
 .. code-block:: console
 
@@ -44,8 +44,8 @@ Usage
 
 Chart Examples
 --------------
-* .. _pie chart: https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_pie.svg
-* .. _bar graph: https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_bar.svg
+* `pie chart`_
+* `bar graph`_
 
 Versions Tested
 ---------------
@@ -55,3 +55,6 @@ Versions Tested
 License
 -------
 MIT
+
+.. _pie chart: https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_pie.svg
+.. _bar graph: https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_bar.svg
