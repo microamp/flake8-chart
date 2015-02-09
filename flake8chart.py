@@ -3,6 +3,10 @@
 """TODO: docstring
 """
 
+__version__ = "0.1"
+__author__ = "james sangho nah"
+__email__ = "sangho.nah@gmail.com"
+
 import sys
 import string
 import itertools
@@ -12,12 +16,10 @@ import csv
 
 try:
     import click
-    # import flake8.engine
-    # import flake8.main
     import pygal
 except ImportError as e:
     print("error: {0}".format(e))
-    sys.exit()
+    sys.exit(1)
 
 if sys.version_info[0] == 3:
     import functools
@@ -37,14 +39,19 @@ CODES = {"E1": "Indentation",
          "W6": "Deprecation",
          "F4": "Module",
          "F8": "Name"}
-STYLE_GUIDE_OPTIONS = {"quiet": True, "statistics": True}
 CHART_TYPE_PIE = "PIE"
 CHART_TYPE_BAR = "BAR"
 CHART_TYPES = (CHART_TYPE_PIE, CHART_TYPE_BAR,)
 
 
-def merge_dicts(*dicts):
-    return {k: v for d in dicts for k, v in d.items()}
+def split_str(s, sep=None, maxsplit=2):
+    return (s.split(sep=sep, maxsplit=maxsplit)
+            if sys.version_info[0] == 3 else
+            string.split(s, sep=sep, maxsplit=maxsplit))
+
+
+def is_stat(items):
+    return len(items) == 3 and items[0].isdigit() and len(items[1]) == 4
 
 
 def pipe(*fns):
@@ -56,20 +63,11 @@ def pipe(*fns):
     return _pipe
 
 
-def split_str(s, sep=None, maxsplit=2):
-    return (s.split(sep=sep, maxsplit=maxsplit)
-            if sys.version_info[0] == 3 else
-            string.split(s, sep=sep, maxsplit=maxsplit))
-
-
 def dict_rows(rows):
-    def _is_stat(split):
-        return len(split) == 3 and split[0].isdigit() and len(split[1]) == 4
-
     for r in rows:
         split = split_str(r)
 
-        if not _is_stat(split):
+        if not is_stat(split):
             continue
 
         yield {"count": int(split[0]),
@@ -83,17 +81,19 @@ def group_by_code(rows):
 
 
 def calc_sum(rows):
-    return (["{code}: {desc}".format(code=code, desc=CODES.get(code, "?")),
-             sum(r["count"] for r in iterable)]
+    return ({"code": "{code}: {desc}".format(code=code,
+                                             desc=CODES.get(code, "?")),
+             "count": sum(r["count"] if isinstance(r["count"], int) else
+                          int(r["count"]) for r in iterable)}
             for code, iterable in rows)
 
 
 def sort_by_count(rows):
-    return sorted(rows, key=lambda r: r[1], reverse=True)
+    return sorted(rows, key=lambda r: r["count"], reverse=True)
 
 
 def get_total(rows):
-    return sum(r[1] for r in rows)
+    return sum(r["count"] for r in rows)
 
 
 def chart_pie(rows, title="Title", filename="pie_chart.svg"):
@@ -101,7 +101,7 @@ def chart_pie(rows, title="Title", filename="pie_chart.svg"):
     chart.title = title
 
     for row in rows:
-        chart.add(*row)
+        chart.add(row["code"], row["count"])
 
     return chart.render_to_file(filename)
 
@@ -111,7 +111,7 @@ def chart_bar(rows, title="Title", filename="bar_chart.svg"):
     chart.title = title
 
     for row in rows:
-        chart.add(*row)
+        chart.add(row["code"], row["count"])
 
     return chart.render_to_file(filename)
 
@@ -127,13 +127,16 @@ def elapsed(f):
 
 
 @click.command()
-@click.option("--chart-type", default=CHART_TYPE_PIE,
+@click.option("--chart-type",
+              default=CHART_TYPE_PIE,
               type=click.Choice(CHART_TYPES),
               help="type of chart (default: {0})".format(CHART_TYPE_PIE))
-@click.option("--chart-output", default="flake8_stats.svg",
-              help=("name of SVG file to export "
-                    "(default: {0})".format("flake8_stats.svg")))
-@click.option("--csv-output", help="name of CSV file to export")
+@click.option("--chart-output",
+              default="flake8_stats.svg",
+              help=("name of SVG file to export (default: {0})"
+                    "".format("flake8_stats.svg")))
+@click.option("--csv-output",
+              help="name of CSV file to export")
 @elapsed
 def flake8chart(chart_type, chart_output, csv_output):
     click.echo("chart-type: {0}".format(chart_type))
@@ -141,7 +144,8 @@ def flake8chart(chart_type, chart_output, csv_output):
     click.echo("csv-output: {0}".format(csv_output))
 
     # sort stats by count
-    stats = sorted([r for r in sys.stdin.read().split("\n") if r],
+    stats = sorted([r for r in sys.stdin.read().split("\n")
+                    if is_stat(split_str(r))],
                    key=lambda r: int(r.split()[0]),
                    reverse=True)
     if not stats:
@@ -155,31 +159,31 @@ def flake8chart(chart_type, chart_output, csv_output):
                     group_by_code,
                     calc_sum,
                     sort_by_count,)
-    aggregated = pipeline(stats)
+    stats_summary = pipeline(stats)
 
     click.echo("stats summary:")
-    click.echo(pprint.pformat(aggregated))
+    click.echo(pprint.pformat(stats_summary))
 
-    # export chart
-    if aggregated:
+    # export chart (svg)
+    if stats_summary:
         if chart_type.upper() == "PIE":
-            chart_pie(aggregated,
+            chart_pie(stats_summary,
                       title="flake8 stats (%)",
                       filename=chart_output)
             click.echo("pie chart exported: '{0}'".format(chart_output))
         else:
-            chart_bar(aggregated,
+            chart_bar(stats_summary,
                       title=("flake8 stats "
-                             "(total: {0})".format(get_total(aggregated))),
+                             "(total: {0})".format(get_total(stats_summary))),
                       filename=chart_output)
             click.echo("bar chart exported: '{0}'".format(chart_output))
 
-    # export csv
+    # export stats summary (csv)
     if csv_output:
         with open(csv_output, "w") as file:
-            writer = csv.DictWriter(file, fieldnames=["count", "code", "desc"])
+            writer = csv.DictWriter(file, fieldnames=["code", "count"])
             writer.writeheader()
-            writer.writerows(list(dict_rows(stats)))
+            writer.writerows(stats_summary)
             click.echo("csv output exported: '{0}'".format(csv_output))
 
 

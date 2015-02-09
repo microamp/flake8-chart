@@ -1,21 +1,10 @@
-count,code,desc
-261,E231,"missing whitespace after ','"
-73,E501,line too long (87 > 79 characters)
-62,E302,"expected 2 blank lines, found 1"
-59,E701,multiple statements on one line (colon)
-48,W291,trailing whitespace
-18,E301,"expected 1 blank line, found 0"
-16,F401,'F' imported but unused
-12,E201,whitespace after '('
-12,E251,unexpected spaces around keyword / parameter equals
-12,E502,the backslash is redundant between brackets
-6,W293,blank line contains whitespace
-3,E261,at least two spaces before inline comment
-2,E265,block comment should start with '# '
-2,E271,multiple spaces after keyword
-2,F403,'from uniform import *' used; unable to detect undefined names
-1,E129,visually indented line with same indent as next logical line
-1,E703,statement ends with a semicolon
-1,E711,comparison to None should be 'if cond is None:'
-1,F841,local variable 'summer' is assigned to but never used
-1,W391,blank line at end of file
+code,count
+E2: Whitespace,292
+E5: Line length,85
+E3: Blank line,80
+E7: Statement,61
+W2: Whitespace,54
+F4: Module,18
+E1: Indentation,1
+F8: Name,1
+W3: Blank line,1
