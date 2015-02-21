@@ -46,7 +46,9 @@ Usage
 Chart Examples
 --------------
 * `pie chart`_
+![pie chart](https://rawgit.com/microamp/flake8-chart/master/output/svg/stats_pie.svg)
 * `bar graph`_
+![bar graph](https://rawgit.com/microamp/flake8-chart/master/output/svg/stats_bar.svg)
 
 Versions Tested
 ---------------
