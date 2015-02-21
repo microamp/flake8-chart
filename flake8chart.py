@@ -38,6 +38,7 @@ CODES = {"E1": "Indentation",
 CHART_TYPE_PIE = "PIE"
 CHART_TYPE_BAR = "BAR"
 CHART_TYPES = (CHART_TYPE_PIE, CHART_TYPE_BAR,)
+CHART_TITLE = "flake8 stats"
 
 
 def split_str(s, sep=None, maxsplit=2):
@@ -126,16 +127,20 @@ def elapsed(f):
 @click.option("--chart-type",
               default=CHART_TYPE_PIE,
               type=click.Choice(CHART_TYPES),
-              help="type of chart (default: {0})".format(CHART_TYPE_PIE))
+              help="type of chart (default: '{0}')".format(CHART_TYPE_PIE))
+@click.option("--chart-title",
+              default=CHART_TITLE,
+              help="title of chart (default: '{0}')".format(CHART_TITLE))
 @click.option("--chart-output",
               default="flake8_stats.svg",
-              help=("name of SVG file to export (default: {0})"
+              help=("name of SVG file to export (default: '{0}')"
                     "".format("flake8_stats.svg")))
 @click.option("--csv-output",
               help="name of CSV file to export")
 @elapsed
-def flake8chart(chart_type, chart_output, csv_output):
+def flake8chart(chart_type, chart_title, chart_output, csv_output):
     click.echo("chart-type: {0}".format(chart_type))
+    click.echo("chart-title: {0}".format(chart_title))
     click.echo("chart_output: {0}".format(chart_output))
     click.echo("csv-output: {0}".format(csv_output))
 
@@ -164,13 +169,14 @@ def flake8chart(chart_type, chart_output, csv_output):
     if stats_summary:
         if chart_type.upper() == "PIE":
             chart_pie(stats_summary,
-                      title="flake8 stats (%)",
+                      title="{0} (%)".format(chart_title),
                       filename=chart_output)
             click.echo("pie chart exported: '{0}'".format(chart_output))
         else:
             chart_bar(stats_summary,
-                      title=("flake8 stats "
-                             "(total: {0})".format(get_total(stats_summary))),
+                      title=("{0} "
+                             "(total: {1})".format(chart_title,
+                                                   get_total(stats_summary))),
                       filename=chart_output)
             click.echo("bar chart exported: '{0}'".format(chart_output))
 

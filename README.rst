@@ -25,9 +25,10 @@ Help
     Usage: flake8chart [OPTIONS]
 
     Options:
-      --chart-type [PIE|BAR]  type of chart (default: PIE)
+      --chart-type [PIE|BAR]  type of chart (default: 'PIE')
+      --chart-title TEXT      title of chart (default: 'flake8 stats')
       --chart-output TEXT     name of SVG file to export (default:
-                              flake8_stats.svg)
+                              'flake8_stats.svg')
       --csv-output TEXT       name of CSV file to export
       --help                  Show this message and exit.
 
