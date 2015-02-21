@@ -46,9 +46,9 @@ Usage
 Chart Examples
 --------------
 * `pie chart`_
-![pie chart](https://rawgit.com/microamp/flake8-chart/master/output/svg/stats_pie.svg)
+|imglink1|_
 * `bar graph`_
-![bar graph](https://rawgit.com/microamp/flake8-chart/master/output/svg/stats_bar.svg)
+|imglink2|_
 
 Versions Tested
 ---------------
@@ -59,5 +59,9 @@ License
 -------
 MIT
 
-.. _pie chart: https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_pie.svg
-.. _bar graph: https://github.com/microamp/flake8-chart/blob/master/output/svg/stats_bar.svg
+.. _pie chart: https://rawgit.com/microamp/flake8-chart/master/output/svg/stats_pie.svg
+.. _bar graph: https://rawgit.com/microamp/flake8-chart/master/output/svg/stats_bar.svg
+.. |imglink1| image:: /microamp/flake8-chart/master/output/svg/stats_pie.svg
+.. _imglink1: https://rawgit.com/
+.. |imglink2| image:: /microamp/flake8-chart/master/output/svg/stats_bar.svg
+.. _imglink2: https://rawgit.com/
