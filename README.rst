@@ -46,9 +46,7 @@ Usage
 Chart Examples
 --------------
 * `pie chart`_
-|imglink1|_
 * `bar graph`_
-|imglink2|_
 
 Versions Tested
 ---------------
@@ -61,7 +59,3 @@ MIT
 
 .. _pie chart: https://rawgit.com/microamp/flake8-chart/master/output/svg/stats_pie.svg
 .. _bar graph: https://rawgit.com/microamp/flake8-chart/master/output/svg/stats_bar.svg
-.. |imglink1| image:: /microamp/flake8-chart/master/output/svg/stats_pie.svg
-.. _imglink1: https://rawgit.com/
-.. |imglink2| image:: /microamp/flake8-chart/master/output/svg/stats_bar.svg
-.. _imglink2: https://rawgit.com/
