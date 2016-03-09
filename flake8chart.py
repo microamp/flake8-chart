@@ -34,7 +34,16 @@ CODES = {"E1": "Indentation",
          "W3": "Blank line",
          "W6": "Deprecation",
          "F4": "Module",
-         "F8": "Name"}
+         "F8": "Name",
+         "I1": "Import order",
+         "I2": "Import section",
+         "D1": "Docstrings missing",
+         "D2": "Docstrings whitespace",
+         "D3": "Docstrings quotes",
+         "D4": "Docstrings content",
+         "C9": "McCabe complexity",
+         "N8": "Naming conventions",
+         }
 CHART_TYPE_PIE = "PIE"
 CHART_TYPE_BAR = "BAR"
 CHART_TYPES = (CHART_TYPE_PIE, CHART_TYPE_BAR,)
