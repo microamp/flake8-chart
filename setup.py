@@ -8,7 +8,7 @@ setup(
     name="flake8-chart",
     description="flake8 stats visualised",
     long_description=open("README.rst").read(),
-    version="0.1.4",
+    version="0.1.5",
     author="james sangho nah",
     author_email="sangho.nah@gmail.com",
     license="MIT License",
