@@ -27,6 +27,7 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Topic :: Software Development :: Quality Assurance"
     ),
     entry_points={"console_scripts": ["flake8chart = flake8chart:flake8chart"]}

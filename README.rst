@@ -52,6 +52,7 @@ Versions Tested
 ---------------
 * Python 2.7
 * Python 3.4
+* Python 3.5
 
 License
 -------
