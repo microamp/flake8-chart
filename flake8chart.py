@@ -58,11 +58,11 @@ def is_stat(items):
     return len(items) == 3 and items[0].isdigit() and len(items[1]) == 4
 
 
-def pipe(*fns):
+def pipe(fn, *fns):
     def _pipe(*args, **kwargs):
-        return reduce(lambda r, g: g(r),
-                      fns[1:],
-                      fns[0](*args, **kwargs))
+        return reduce(lambda v, f: f(v),
+                      fns,
+                      fn(*args, **kwargs))
 
     return _pipe
 
