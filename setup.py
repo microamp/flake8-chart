@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # flake8-chart - flake8 stats visualised
-# Copyright (C) 2015  james sangho nah <sangho.nah@gmail.com>
+# Copyright (C) 2016  james sangho nah <sangho.nah@gmail.com>
 
 from setuptools import setup
 
@@ -8,7 +8,7 @@ setup(
     name="flake8-chart",
     description="flake8 stats visualised",
     long_description=open("README.rst").read(),
-    version="0.1.3",
+    version="0.1.4",
     author="james sangho nah",
     author_email="sangho.nah@gmail.com",
     license="MIT License",
